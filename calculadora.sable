@@ -13,12 +13,32 @@ Helpers
  comfim = '}';
  
 Tokens
+ pontovirgula = ';';
+ atribuidor = '<<';
+ tipo_base = ('inteiro' | 'real' | 'cadeia' | 'booleano');
+ se = 'se';
+ senao = 'senao';
+ enquanto = 'enquanto';
+ 
+ procedimento ='procedimento';
+ funcao = 'funcao';
+ comece ='comece';
+ termine ='termine';
+ 
  numero = digito+;
+ 
+ 
  soma = '+';
  menos = '-';
  mult = '*';
  div = '/';
  mod = '%';
+ 
+ maior = '>';
+ maiorigual = '>=';
+ nao = 'nao';
+ ou = 'ou';
+ 
  par_esq = '(';
  par_dir = ')';
  identificador = (letra | under) (letra | under | digito)*;
