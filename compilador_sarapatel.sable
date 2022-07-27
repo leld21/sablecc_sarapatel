@@ -3,27 +3,42 @@ Package calculadora;
 Helpers
  digito = ['0' .. '9'];
  espaco = ' ';
+ tab = 9;
  rc = 13;
  nl = 10;
  under = '_';
  letra =['a'..'z'] | ['A'..'Z'];
+ aspa = 39;
  tudo = [0 .. 0xFFFF];
  tudomenosfecha = [tudo-'}'];
+ tudomenosaspa = [tudo-aspa];
  cominicio = '{';
  comfim = '}';
  
 Tokens
  pontovirgula = ';';
+ doispontos = ':';
+ separador = '|';
  atribuidor = '<<';
+ variavel = 'var';
+ constante = 'const';
  tipo_base = ('inteiro' | 'real' | 'cadeia' | 'booleano');
  se = 'se';
  senao = 'senao';
  enquanto = 'enquanto';
+ string=aspa tudomenosaspa* aspa;
  
+ imprima ='imprima';
+ leia ='leia';
+ size ='size';
+ 
+ principal = '>>';
  procedimento ='procedimento';
  funcao = 'funcao';
  comece ='comece';
  termine ='termine';
+ 
+ 
  
  numero = digito+;
  
@@ -34,6 +49,7 @@ Tokens
  div = '/';
  mod = '%';
  
+ igual = '=';
  maior = '>';
  maiorigual = '>=';
  nao = 'nao';
@@ -41,8 +57,11 @@ Tokens
  
  par_esq = '(';
  par_dir = ')';
+ chave_esq = '[';
+ chave_dir = ']';
+ 
  identificador = (letra | under) (letra | under | digito)*;
- vazio = (espaco | rc | nl)+;
+ vazio = (espaco | rc | nl | tab)+;
  comentario = (cominicio) (tudomenosfecha)* (comfim);
  
 
