@@ -1,0 +1,33 @@
+Package calculadora;
+
+Helpers
+ digito = ['0' .. '9'];
+ espaco = ' ';
+ rc = 13;
+ nl = 10;
+ under = '_';
+ letra =['a'..'z'] | ['A'..'Z'];
+ tudo = [0 .. 0xFFFF];
+ tudomenosfecha = [tudo-'}'];
+ cominicio = '{';
+ comfim = '}';
+ 
+Tokens
+ numero = digito+;
+ soma = '+';
+ menos = '-';
+ mult = '*';
+ div = '/';
+ mod = '%';
+ par_esq = '(';
+ par_dir = ')';
+ identificador = (letra | under) (letra | under | digito)*;
+ vazio = (espaco | rc | nl)+;
+ comentario = (cominicio) (tudomenosfecha)* (comfim);
+ 
+
+
+Ignored Tokens
+ vazio,
+ comentario;
+ 
