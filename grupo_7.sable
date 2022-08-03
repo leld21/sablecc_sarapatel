@@ -1,0 +1,81 @@
+Package sarapatel;
+
+Helpers
+ digito = ['0' .. '9'];
+ espaco = ' ';
+ tab = 9;
+ rc = 13;
+ nl = 10;
+ aspa = 39;
+ under = '_';
+ letra =['a'..'z'] | ['A'..'Z'];
+ tudo = [0 .. 0xFFFF];
+ tudomenosfecha = [tudo-'}'];
+ tudomenosaspa = [tudo-aspa];
+ tudomenosnl = [tudo-nl];
+ cominicio = '{';
+ comfim = '}';
+ 
+Tokens
+ pontovirgula = ';';
+ doispontos = ':';
+ separador = '|';
+ atribuidor = '<<';
+ 
+ variavel = 'var';
+ constante = 'const';
+ tipointeiro = 'inteiro';
+ tiporeal = 'real';
+ tipocadeia = 'cadeia';
+ tipobooleano = 'booleano';
+ 
+ se = 'se';
+ senao = 'senao';
+ enquanto = 'enquanto';
+ 
+ imprima ='imprima';
+ leia ='leia';
+ size ='size';
+ 
+ principal = '>>';
+ procedimento ='procedimento';
+ funcao = 'funcao';
+ comece ='comece';
+ termine ='termine';
+ 
+ booleano ='verdade'|'falso';
+ cadeia=aspa tudomenosaspa* aspa;
+ binario = '0b' ('0'|'1')+;
+ real = digito+ ',' digito+;
+ numero = digito+;
+ 
+ soma = '+';
+ menos = '-';
+ mult = '*';
+ div = '/';
+ mod = '%';
+ 
+ igual = '=';
+ maior = '>';
+ maiorigual = '>=';
+ e = 'e';
+ nao = 'nao';
+ ou = 'ou';
+ 
+ par_esq = '(';
+ par_dir = ')';
+ chave_esq = '[';
+ chave_dir = ']';
+ 
+ identificador = (letra | under) (letra | under | digito)*;
+ vazio = (espaco | rc | nl | tab)+;
+ comlinha ='--' tudomenosnl*;
+ combloco = (cominicio) (tudomenosfecha)* (comfim);
+ 
+
+
+Ignored Tokens
+ vazio,
+ comlinha,
+ combloco;
+ 
