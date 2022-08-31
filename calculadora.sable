@@ -1,0 +1,65 @@
+Package calculadora;
+
+Helpers
+ letra =['a'..'z'] | ['A'..'Z'];
+ under = '_';
+ digito = ['0' .. '9'];
+ espaco = ' ';
+ menos = '-';
+ rc = 13;
+ nl = 10;
+ 
+Tokens
+ tipoint = 'int';
+ tiporeal = 'real';
+ identificador = (letra | under) (letra | under | digito)*;
+ int = menos digito+ | digito+;
+ real = digito+ ',' digito+;
+ atribuicao = '=';
+ pontvir = ';';
+ separador = ',';
+ soma = '+';
+ menos = '-';
+ mult = '*';
+ div = '/';
+ mod = '%';
+ par_esq = '(';
+ par_dir = ')';
+ espaco = ' ';
+ vazio = (espaco | rc | nl)+;
+
+
+Ignored Tokens
+ vazio;
+ 
+ 
+Productions
+ declaracao =
+ {decl_varint} tipoint espaco* variaveis 
+ |{decl_varreal} tiporeal espaco* variaveis;
+ 
+ 
+ variaveis = 
+ identificador maisvar* pontvir;
+ 
+ maisvar = 
+ separador espaco* identificador;
+  
+ id =  identificador;
+   
+
+ expr =
+   {fator} fator 
+  |{soma} expr soma fator 
+  |{menos} expr menos fator;
+
+ fator =
+   {termo} termo 
+  |{mult} fator mult termo 
+  |{div} fator div termo 
+  |{mod} fator mod termo;
+  
+ termo =
+   {int} int
+  |{real} real
+  |{par} par_esq expr par_dir;
