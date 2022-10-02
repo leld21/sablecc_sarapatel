@@ -199,23 +199,23 @@ Productions
  comando = 
  		 {enquanto} comm_enquanto
  		 |{se} comm_se
+ 		 |{senao} comm_se_nao
  		 |{atribuicao} id_atribuicao pontovirgula
  		 |{chama_proc} chamada_procedimento pontovirgula
- 		 |{blococomands} comece bloco_comandos termine;
+ 		 |{blococomands} bloco_comandos;
  		
  		
  comm_enquanto = 
-  enquanto par_esq exp par_dir comece comando termine;		
+  enquanto par_esq exp par_dir comando;		
  
  comm_se =
- 	{se_inicio} se par_esq exp par_dir comece comando termine
- 	|{senao} comm_se_nao;
-
+  se par_esq exp par_dir comando;
+ 
  comm_se_nao = 
-  se par_esq exp par_dir [comesq]:comece [dir]:comando [termesq]:termine senao comece comando termine;
+  se par_esq exp par_dir [esq]:bloco_comandos senao bloco_comandos;
 
  bloco_comandos = 
-  var_const* comando*;
+  comece var_const* comando* termine;
   
  chamada_procedimento = 
   id_e_predefinidos par_esq lista_exp par_dir;
