@@ -1,0 +1,176 @@
+Package calculadora;
+
+Helpers
+ digito = ['0' .. '9'];
+ espaco = ' ';
+ tab = 9;
+ rc = 13;
+ nl = 10;
+ under = '_';
+ letra =['a'..'z'] | ['A'..'Z'];
+ aspa = 39;
+ tudo = [0 .. 0xFFFF];
+ tudomenosfecha = [tudo-'}'];
+ tudomenosaspa = [tudo-aspa];
+ tudomenosnl = [tudo-nl];
+ cominicio = '{';
+ comfim = '}';
+ 
+Tokens
+ pontovirgula = ';';
+ doispontos = ':';
+ separador = '|';
+ atribuidor = '<<';
+ 
+ variavel = 'var';
+ constante = 'const';
+ tipoint = 'inteiro';
+ tiporeal = 'real';
+ tipocadeia = 'cadeia';
+ tipobooleano = 'booleano';
+ 
+ se = 'se';
+ senao = 'senao';
+ enquanto = 'enquanto';
+ 
+ imprima ='imprima';
+ leia ='leia';
+ size ='size';
+ 
+ principal = '>>';
+ procedimento ='procedimento';
+ funcao = 'funcao';
+ comece ='comece';
+ termine ='termine';
+ 
+ booleano ='verdade'|'falso';
+ cadeia=aspa tudomenosaspa* aspa;
+ binario = '0b' ('0'|'1')+;
+ real = digito+ ',' digito+;
+ numero = digito+;
+ 
+ soma = '+';
+ menos = '-';
+ mult = '*';
+ div = '/';
+ mod = '%';
+ 
+ igual = '=';
+ maior = '>';
+ maiorigual = '>=';
+ e = 'e';
+ nao = 'nao';
+ ou = 'ou';
+ 
+ par_esq = '(';
+ par_dir = ')';
+ chave_esq = '[';
+ chave_dir = ']';
+ 
+ identificador = (letra | under) (letra | under | digito)*;
+ vazio = (espaco | rc | nl | tab)+;
+ comlinha ='--' tudomenosnl*;
+ combloco = (cominicio) (tudomenosfecha)* (comfim);
+ 
+
+
+Ignored Tokens
+ vazio,
+ comlinha,
+ combloco;
+ 
+  
+Productions
+ programa =
+ {funcoes} dec_funcao+;
+
+ dec_funcao =
+  funcao doispontos tiporetorno identificador par_esq parametros par_dir exp;
+
+ parametros = 
+  {parametros} parametro maisparametros*
+  |{vazio};
+  
+ parametro = 
+  tipo_parametro identificador;
+  
+ maisparametros =
+  separador parametro;
+ 
+ tipo_parametro =
+  {base}tipo_base
+  |tipo_parametro chave_esq chave_dir;
+  
+ tipo =
+ {base} tipo_base
+ |{vetor} tipo chave_esq exp chave_dir;
+ 
+ tiporetorno =
+  {base} tipo_base
+ |{vetor} tiporetorno chave_esq chave_dir;
+ 
+ tipo_base =
+  {inteiro} tipoint 
+ |{real} tiporeal
+ |{cadeia} tipocadeia
+ |{booleano} tipobooleano;
+ 
+
+ exp =
+   {fator} fator
+  |{cham_func} chamadafuncao
+  |{arraycomp} array_comp
+  |{negativo} menos exp
+  |{seternario} seternario
+  |{bloco} bloco_expressoes;
+
+ fator =
+   {termo} termo
+  |{soma} fator soma termo 
+  |{menos} fator menos termo
+  |{mult} fator mult termo
+  |{div} fator div termo
+  |{mod} fator mod termo
+  |{igual} fator igual termo
+  |{maiorigual} fator maiorigual termo
+  |{maior} fator maior termo
+  |{e} fator e termo
+  |{ou} fator ou termo
+  |{nao} nao termo;
+  
+ termo =
+   {int} numero
+  |{real} real
+  |{cadeia} cadeia
+  |{booleano} booleano
+  |{variavel} valor
+  |{par} par_esq exp par_dir;
+  
+ valor =
+   {variavel} identificador
+  |{vetor} valor chave_esq exp chave_dir;
+  
+ chamadafuncao = 
+  identificador par_esq lista_exp par_dir;
+  
+ lista_exp =
+   {expressoes} exp maisexp*
+  |{vazio};
+  
+ maisexp =
+  separador exp;
+  
+ array_comp =
+  chave_esq identificador separador exp chave_dir;
+  
+ seternario =
+  se par_esq exp par_dir [verdade]:exp senao [falso]:exp;
+  
+ bloco_expressoes =
+  comece dec_cons* exp termine;
+  
+ dec_cons =
+  constante doispontos tipo id_atribuicao pontovirgula;
+  
+ id_atribuicao =
+  identificador atribuidor exp;
