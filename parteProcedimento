@@ -1,0 +1,139 @@
+Package calculadora;
+
+Helpers
+ digito = ['0' .. '9'];
+ espaco = ' ';
+ tab = 9;
+ rc = 13;
+ nl = 10;
+ under = '_';
+ letra =['a'..'z'] | ['A'..'Z'];
+ aspa = 39;
+ tudo = [0 .. 0xFFFF];
+ tudomenosfecha = [tudo-'}'];
+ tudomenosaspa = [tudo-aspa];
+ tudomenosnl = [tudo-nl];
+ cominicio = '{';
+ comfim = '}';
+ 
+Tokens
+ pontovirgula = ';';
+ doispontos = ':';
+ separador = '|';
+ atribuidor = '<<';
+ 
+ variavel = 'var';
+ constante = 'const';
+ tipoint = 'inteiro';
+ tiporeal = 'real';
+ tipocadeia = 'cadeia';
+ tipobooleano = 'booleano';
+ 
+ se = 'se';
+ senao = 'senao';
+ enquanto = 'enquanto';
+ 
+ imprima ='imprima';
+ leia ='leia';
+ size ='size';
+ 
+ principal = '>>';
+ procedimento ='procedimento';
+ funcao = 'funcao';
+ comece ='comece';
+ termine ='termine';
+ 
+ booleano ='verdade'|'falso';
+ cadeia=aspa tudomenosaspa* aspa;
+ binario = '0b' ('0'|'1')+;
+ real = digito+ ',' digito+;
+ numero = digito+;
+ 
+ soma = '+';
+ menos = '-';
+ mult = '*';
+ div = '/';
+ mod = '%';
+ 
+ igual = '=';
+ maior = '>';
+ maiorigual = '>=';
+ e = 'e';
+ nao = 'nao';
+ ou = 'ou';
+ 
+ par_esq = '(';
+ par_dir = ')';
+ chave_esq = '[';
+ chave_dir = ']';
+ 
+ identificador = (letra | under) (letra | under | digito)*;
+ vazio = (espaco | rc | nl | tab)+;
+ comlinha ='--' tudomenosnl*;
+ combloco = (cominicio) (tudomenosfecha)* (comfim);
+ 
+
+
+Ignored Tokens
+ vazio,
+ comlinha,
+ combloco;
+ 
+  
+Productions
+
+dec_procedimento = {simples} principal? procedimento doispontos identificador  par_esq parametros par_dir comando;
+ 
+parametros = 
+  {parametros} parametro maisparametros*
+  |{vazio};
+  
+ parametro = 
+  tipo_parametro identificador;
+  
+ maisparametros =
+  separador parametro;
+ 
+ tipo_parametro =
+  {base}tipo_base
+  |tipo_parametro chave_esq chave_dir;
+  
+ tipo =
+ {base} tipo_base
+ |{vetor} tipo chave_esq numero chave_dir;
+ 
+  tipo_base =
+  {inteiro} tipoint 
+ |{real} tiporeal
+ |{cadeia} tipocadeia
+ |{booleano} tipobooleano;
+ 
+
+
+ 
+ comando = 
+ 		 {inicio} comece comm_se termine
+ 		 |{atribuicao} comece id_atribuicao pontovirgula termine
+ 		 |{enquanto} comece comm_enquanto termine
+ 		 |{blococomands} comece bloco_comandos termine
+ 		 |{chama_proc} comece chamada_procedimento pontovirgula termine;
+ 		
+ 		
+comm_enquanto = enquanto par_esq numero par_dir comando;		
+ 
+comm_se =
+ 	{se_inicio} se par_esq numero par_dir comando
+ 	|{senao} comm_se_nao;
+
+comm_se_nao = se par_esq numero par_dir [dir]:comando senao comando;
+
+bloco_comandos = comece var_const* comando* termine;
+
+var_const = {numero} numero
+			|{bool} booleano;
+
+id_atribuicao =
+  identificador atribuidor numero;
+  
+chamada_procedimento = identificador par_esq numero par_dir;
+
