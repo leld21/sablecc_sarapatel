@@ -137,7 +137,6 @@ Productions
 // exp
  exp =
    {fator} fator
-  |{cham_func} chamadafuncao
   |{arraycomp} array_comp
   |{negativo} menos exp
   |{seternario} seternario
@@ -164,6 +163,7 @@ Productions
   |{cadeia} cadeia
   |{booleano} booleano
   |{variavel} valor
+  |{cham_func} chamadafuncao
   |{par} par_esq exp par_dir;
   
  valor =
@@ -171,7 +171,9 @@ Productions
   |{vetor} valor chave_esq exp chave_dir;
   
  chamadafuncao = 
-  identificador par_esq lista_exp par_dir;
+   {leia} leia par_esq par_dir
+  |{size} size par_esq lista_exp par_dir
+  |{id} identificador par_esq lista_exp par_dir;
   
  lista_exp =
    {expressoes} exp maisexp*
@@ -219,7 +221,5 @@ Productions
   id_e_predefinidos par_esq lista_exp par_dir;
   
  id_e_predefinidos =
-  {leia} leia
-  |{imprima} imprima
-  |{size} size
+  {imprima} imprima
   |{id} identificador;
