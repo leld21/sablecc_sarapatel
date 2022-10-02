@@ -1,0 +1,59 @@
+{
+	calcula_e_verifica_sinal.sptrl: Taylan Cruz
+}
+
+>> procedimento :principal()
+comece
+
+    var: real valor_1;
+    var: real valor_2;
+	var: real valor_3 << 1000,1000;
+    var: real soma;
+    var: real subtracao;
+    var: real multiplicacao;
+    var: real divisao;
+	var: booleano vdd << verdade;
+    const: cadeia tipo << 'positivo';
+
+	var: inteiro zero << se (vdd) 0 senao 1;
+
+    imprima ('Digite o primeiro valor: \n');
+    valor_1 << leia();
+    imprima ('Digite o segundo valor: \n');
+    valor_2 << leia();
+
+    imprima ('A soma é: ');
+    imprima (valor_1 + valor_2);
+    imprima ('A subtração é: ');
+    imprima (valor_1 - valor_2);
+    imprima ('O produto é: ');
+    imprima (valor_1 * valor_2);
+    imprima ('A divisão é: ');
+    imprima (valor_1 / valor_2);
+		    se ((valor_1 > valor_2) e (valor_1 > zero) ou (nao(vdd)))
+		    comece
+		    comece
+		    		imprima ('A subtração dos valores é do tipo ');
+		    		imprima (tipo);
+			    termine
+			    termine
+			    senao
+			    comece
+			    comece
+			    	se (valor_2 > valor_1)
+			    	comece
+			    	comece
+		    		  imprima ('A subtração dos valores não é do tipo ');
+		    		  imprima (tipo);
+		    		termine
+			    	termine
+			        senao
+			        comece
+			    	  se (valor_1 > zero ou zero > valor_1)
+			    	  comece
+			    	    imprima ('O valor 1 é do tipo real');
+			    	  termine
+			        termine
+			    termine
+			    termine
+termine
