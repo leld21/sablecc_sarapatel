@@ -153,8 +153,7 @@ Productions
   |{maiorigual} fator maiorigual termo
   |{maior} fator maior termo
   |{e} fator e termo
-  |{ou} fator ou termo
-  |{nao} nao termo;
+  |{ou} fator ou termo;
   
  termo =
    {int} numero
@@ -164,7 +163,8 @@ Productions
   |{booleano} booleano
   |{variavel} valor
   |{cham_func} chamadafuncao
-  |{par} par_esq exp par_dir;
+  |{par} par_esq exp par_dir
+  |{nao} nao termo;
   
  valor =
    {variavel} identificador
@@ -192,7 +192,7 @@ Productions
   comece dec_cons* exp termine;
   
  id_atribuicao =
-  identificador atribuidor exp;
+  valor atribuidor exp;
   
 //comando
   
@@ -212,7 +212,7 @@ Productions
   se par_esq exp par_dir comando;
  
  comm_se_nao = 
-  se par_esq exp par_dir [esq]:bloco_comandos senao bloco_comandos;
+  se par_esq exp par_dir [esq]:bloco_comandos senao comando;
 
  bloco_comandos = 
   comece var_const* comando* termine;

@@ -6,9 +6,9 @@ Helpers
  tab = 9;
  rc = 13;
  nl = 10;
- aspa = 39;
  under = '_';
  letra =['a'..'z'] | ['A'..'Z'];
+ aspa = 39;
  tudo = [0 .. 0xFFFF];
  tudomenosfecha = [tudo-'}'];
  tudomenosaspa = [tudo-aspa];
@@ -24,7 +24,7 @@ Tokens
  
  variavel = 'var';
  constante = 'const';
- tipointeiro = 'inteiro';
+ tipoint = 'inteiro';
  tiporeal = 'real';
  tipocadeia = 'cadeia';
  tipobooleano = 'booleano';
@@ -79,3 +79,147 @@ Ignored Tokens
  comlinha,
  combloco;
  
+  
+Productions
+ programa = var_const* func_e_proc+;
+
+ var_const = {numero} dec_var
+	|{bool} dec_cons;
+			
+ func_e_proc =
+ 	{funcao} dec_funcao
+ 	|{proc} dec_procedimento;
+ 	
+ dec_funcao =
+  funcao doispontos tiporetorno identificador par_esq parametros par_dir exp;
+  
+ dec_procedimento = 
+   {simples} principal? procedimento doispontos identificador  par_esq parametros par_dir comando;
+
+ parametros = 
+  {parametros} parametro maisparametros*
+  |{vazio};
+  
+ parametro = 
+  tipo_parametro identificador;
+  
+ maisparametros =
+  separador parametro;
+ 
+ tipo_parametro =
+  {base}tipo_base
+  |tipo_parametro chave_esq chave_dir;
+  
+ tipo =
+ {base} tipo_base
+ |{vetor} tipo chave_esq exp chave_dir;
+ 
+ tiporetorno =
+  {base} tipo_base
+ |{vetor} tiporetorno chave_esq chave_dir;
+ 
+ tipo_base =
+  {inteiro} tipoint 
+ |{real} tiporeal
+ |{cadeia} tipocadeia
+ |{booleano} tipobooleano;
+ 
+  dec_cons =
+   constante doispontos tipo id_atribuicao pontovirgula;
+  
+  dec_var =
+   variavel doispontos tipo id_ou_id_atri pontovirgula;
+  
+  id_ou_id_atri =
+   {id}identificador
+   |{id_a} id_atribuicao;
+ 
+// exp
+ exp =
+   {fator} fator
+  |{arraycomp} array_comp
+  |{negativo} menos exp
+  |{seternario} seternario
+  |{bloco} bloco_expressoes;
+
+ fator =
+   {termo} termo
+  |{soma} fator soma termo 
+  |{menos} fator menos termo
+  |{mult} fator mult termo
+  |{div} fator div termo
+  |{mod} fator mod termo
+  |{igual} fator igual termo
+  |{maiorigual} fator maiorigual termo
+  |{maior} fator maior termo
+  |{e} fator e termo
+  |{ou} fator ou termo;
+  
+ termo =
+   {int} numero
+  |{binario} binario
+  |{real} real
+  |{cadeia} cadeia
+  |{booleano} booleano
+  |{variavel} valor
+  |{cham_func} chamadafuncao
+  |{par} par_esq exp par_dir
+  |{nao} nao termo;
+  
+ valor =
+   {variavel} identificador
+  |{vetor} valor chave_esq exp chave_dir;
+  
+ chamadafuncao = 
+   {leia} leia par_esq par_dir
+  |{size} size par_esq lista_exp par_dir
+  |{id} identificador par_esq lista_exp par_dir;
+  
+ lista_exp =
+   {expressoes} exp maisexp*
+  |{vazio};
+  
+ maisexp =
+  separador exp;
+  
+ array_comp =
+  chave_esq identificador separador exp chave_dir;
+  
+ seternario =
+  se par_esq exp par_dir [verdade]:exp senao [falso]:exp;
+  
+ bloco_expressoes =
+  comece dec_cons* exp termine;
+  
+ id_atribuicao =
+  valor atribuidor exp;
+  
+//comando
+  
+ comando = 
+ 		 {enquanto} comm_enquanto
+ 		 |{se} comm_se
+ 		 |{senao} comm_se_nao
+ 		 |{atribuicao} id_atribuicao pontovirgula
+ 		 |{chama_proc} chamada_procedimento pontovirgula
+ 		 |{blococomands} bloco_comandos;
+ 		
+ 		
+ comm_enquanto = 
+  enquanto par_esq exp par_dir comando;		
+ 
+ comm_se =
+  se par_esq exp par_dir comando;
+ 
+ comm_se_nao = 
+  se par_esq exp par_dir [esq]:bloco_comandos senao comando;
+
+ bloco_comandos = 
+  comece var_const* comando* termine;
+  
+ chamada_procedimento = 
+  id_e_predefinidos par_esq lista_exp par_dir;
+  
+ id_e_predefinidos =
+  {imprima} imprima
+  |{id} identificador;
