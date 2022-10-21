@@ -81,455 +81,375 @@ Ignored Tokens
  
 Productions 
 
-    programa
-         {-> P.programa  } =
+programa	{-> P.programa  } =
 
-     {aprograma1} P.a_func_e_proc 
-         {-> New programa ([  ], [ a_func_e_proc.func_e_proc  ] )  }   |
+ {aprograma1} P.a_func_e_proc 
+     {-> New programa ([  ], [ a_func_e_proc.func_e_proc  ] )  }   |
 
-     {aprograma2} P.a_var_const P.a_func_e_proc 
-         {-> New programa ([ a_var_const.var_const  ], [ a_func_e_proc.func_e_proc  ] )  }  
-     ;
+ {aprograma2} P.a_var_const P.a_func_e_proc 
+     {-> New programa ([ a_var_const.var_const  ], [ a_func_e_proc.func_e_proc  ] )  }  
+ ;
 
-    var_const
-         {-> P.var_const  } =
+var_const	{-> P.var_const  } =
 
-     {numero} dec_var 
-         {-> New var_const.numero (dec_var  )  }   |
+ {numero} dec_var 
+     {-> New var_const.numero (dec_var  )  }   |
 
-     {bool} dec_cons 
-         {-> New var_const.bool (dec_cons  )  }  
-     ;
+ {bool} dec_cons 
+     {-> New var_const.bool (dec_cons  )  }  
+ ;
 
-    func_e_proc
-         {-> P.func_e_proc  } =
+func_e_proc	{-> P.func_e_proc  } =
 
-     {funcao} dec_funcao 
-         {-> New func_e_proc.funcao (dec_funcao  )  }   |
+ {funcao} dec_funcao 
+     {-> New func_e_proc.funcao (dec_funcao)  }   |
 
-     {proc} dec_procedimento 
-         {-> New func_e_proc.proc (dec_procedimento  )  }  
-     ;
+ {proc} dec_procedimento 
+     {-> New func_e_proc.proc (dec_procedimento)  }  
+ ;
 
-    dec_funcao
-         {-> P.dec_funcao  } =
+dec_funcao {-> P.dec_funcao  } =
 
-     funcao doispontos tiporetorno identificador par_esq parametros par_dir exp 
-         {-> New dec_funcao (funcao , doispontos , tiporetorno , identificador , par_esq , parametros , par_dir , exp.a_exp)  }  
-     ;
+ funcao doispontos tiporetorno identificador par_esq parametros par_dir exp 
+     {-> New dec_funcao (tiporetorno , identificador , [parametros.parametro] , exp.a_exp)  }  
+ ;
 
-    dec_procedimento
-         {-> P.dec_procedimento  } =
+dec_procedimento  {-> P.dec_procedimento  } =
 
-     {asimplesdecprocedimento1} procedimento doispontos identificador par_esq parametros par_dir exp 
-         {-> New dec_procedimento.simples (Null , procedimento , doispontos , identificador , par_esq , parametros , par_dir , exp.a_exp  )  }   |
+ {asimplesdecprocedimento1} procedimento doispontos identificador par_esq parametros par_dir exp 
+     {-> New dec_procedimento.simples (identificador ,[parametros.parametro] ,exp.a_exp  )  }   |
 
-     {asimplesdecprocedimento2} principal procedimento doispontos identificador par_esq parametros par_dir exp 
-         {-> New dec_procedimento.simples (principal , procedimento , doispontos , identificador , par_esq , parametros , par_dir , exp.a_exp  )  }  
-     ;
+ {asimplesdecprocedimento2} principal procedimento doispontos identificador par_esq parametros par_dir exp 
+     {-> New dec_procedimento.simples (identificador ,[parametros.parametro], exp.a_exp  )  }  
+ ;
 
-    parametros
-         {-> P.parametros  } =
+parametros	{-> P.parametro*} =
 
-     {aparametrosparametros1} parametro 
-         {-> New parametros.parametros (parametro , [  ] )  }   |
+ {lista_parametro} parametro separador parametros 
+ 	{-> [parametro.parametro, parametros.parametro]} |
+ {parametro} parametro {-> [parametro]}
+ ;
 
-     {aparametrosparametros2} parametro P.a_maisparametros 
-         {-> New parametros.parametros (parametro , [ a_maisparametros.maisparametros  ] )  }   |
+parametro	{-> P.parametro  } =
 
-     {vazio} 
-         {-> New parametros.vazio ( )  }  
-     ;
+ tipo_parametro identificador 
+     {-> New parametro (tipo_parametro , identificador  )  }  
+ ;
 
-    parametro
-         {-> P.parametro  } =
+tipo_parametro	{-> P.tipo_parametro  } =
 
-     tipo_parametro identificador 
-         {-> New parametro (tipo_parametro , identificador  )  }  
-     ;
+ {base} tipo_base {-> New tipo_parametro.base (tipo_base)  }   |
 
-    maisparametros
-         {-> P.maisparametros  } =
+ tipo_parametro chave_esq chave_dir {-> New tipo_parametro (tipo_parametro)  }  
+ ;
 
-     separador parametro 
-         {-> New maisparametros (separador , parametro  )  }  
-     ;
+tipo	{-> P.tipo  } =
 
-    tipo_parametro
-         {-> P.tipo_parametro  } =
+ {base} tipo_base 
+     {-> New tipo.base (tipo_base  )  }   |
 
-     {base} tipo_base 
-         {-> New tipo_parametro.base (tipo_base  )  }   |
+ {vetor} tipo chave_esq exp chave_dir 
+     {-> New tipo.vetor (tipo ,exp.a_exp)  }  
+ ;
 
-     tipo_parametro chave_esq chave_dir 
-         {-> New tipo_parametro (tipo_parametro , chave_esq , chave_dir  )  }  
-     ;
+tiporetorno	{-> P.tiporetorno  } =
 
-    tipo
-         {-> P.tipo  } =
+ {base} tipo_base 
+     {-> New tiporetorno.base (tipo_base  )  }   |
 
-     {base} tipo_base 
-         {-> New tipo.base (tipo_base  )  }   |
+ {vetor} tiporetorno chave_esq chave_dir 
+     {-> New tiporetorno.vetor (tiporetorno)  }  
+ ;
 
-     {vetor} tipo chave_esq exp chave_dir 
-         {-> New tipo.vetor (tipo , chave_esq , exp.a_exp , chave_dir  )  }  
-     ;
+tipo_base	{-> P.tipo_base  } =
 
-    tiporetorno
-         {-> P.tiporetorno  } =
+ {inteiro} tipoint 
+     {-> New tipo_base.inteiro (tipoint  )  }   |
 
-     {base} tipo_base 
-         {-> New tiporetorno.base (tipo_base  )  }   |
+ {real} tiporeal 
+     {-> New tipo_base.real (tiporeal  )  }   |
 
-     {vetor} tiporetorno chave_esq chave_dir 
-         {-> New tiporetorno.vetor (tiporetorno , chave_esq , chave_dir  )  }  
-     ;
+ {cadeia} tipocadeia 
+     {-> New tipo_base.cadeia (tipocadeia  )  }   |
 
-    tipo_base
-         {-> P.tipo_base  } =
+ {booleano} tipobooleano 
+     {-> New tipo_base.booleano (tipobooleano  )  }  
+ ;
 
-     {inteiro} tipoint 
-         {-> New tipo_base.inteiro (tipoint  )  }   |
+dec_cons	{-> P.dec_cons  } =
 
-     {real} tiporeal 
-         {-> New tipo_base.real (tiporeal  )  }   |
+ constante doispontos tipo id_atribuicao pontovirgula 
+     {-> New dec_cons (constante , doispontos , tipo , id_atribuicao , pontovirgula  )  }  
+ ;
 
-     {cadeia} tipocadeia 
-         {-> New tipo_base.cadeia (tipocadeia  )  }   |
+dec_var	{-> P.dec_var  } =
 
-     {booleano} tipobooleano 
-         {-> New tipo_base.booleano (tipobooleano  )  }  
-     ;
+ variavel doispontos tipo id_ou_id_atri pontovirgula 
+     {-> New dec_var (variavel , doispontos , tipo , id_ou_id_atri , pontovirgula  )  }  
+ ;
 
-    dec_cons
-         {-> P.dec_cons  } =
+id_ou_id_atri	{-> P.id_ou_id_atri  } =
 
-     constante doispontos tipo id_atribuicao pontovirgula 
-         {-> New dec_cons (constante , doispontos , tipo , id_atribuicao , pontovirgula  )  }  
-     ;
+ {id} identificador 
+     {-> New id_ou_id_atri.id (identificador  )  }   |
 
-    dec_var
-         {-> P.dec_var  } =
+ {id_a} id_atribuicao 
+     {-> New id_ou_id_atri.id_a (id_atribuicao  )  }  
+ ;
 
-     variavel doispontos tipo id_ou_id_atri pontovirgula 
-         {-> New dec_var (variavel , doispontos , tipo , id_ou_id_atri , pontovirgula  )  }  
-     ;
+exp	{-> a_exp  } =
 
-    id_ou_id_atri
-         {-> P.id_ou_id_atri  } =
+ {fator} fator {-> fator.a_exp}   |
 
-     {id} identificador 
-         {-> New id_ou_id_atri.id (identificador  )  }   |
+ {arraycomp} array_comp {-> New a_exp.a_arraycomp (array_comp)}   |
 
-     {id_a} id_atribuicao 
-         {-> New id_ou_id_atri.id_a (id_atribuicao  )  }  
-     ;
-	
-    exp	{-> a_exp  } =
+ {negativo} menos exp {-> New a_exp.a_negativo (exp.a_exp)}   |
 
-     {fator} fator {-> fator.a_exp}   |
+ {seternario} seternario {-> New a_exp.a_seternario (seternario)}   |
 
-     {arraycomp} array_comp {-> New a_exp.a_arraycomp (array_comp)}   |
+ {bloco} bloco_expressoes {-> New a_exp.a_bloco (bloco_expressoes)}  
+ ;
 
-     {negativo} menos exp {-> New a_exp.a_negativo (exp.a_exp)}   |
+fator  {-> a_exp  } =
 
-     {seternario} seternario {-> New a_exp.a_seternario (seternario)}   |
+ {termo} termo {-> termo.a_exp}   |
 
-     {bloco} bloco_expressoes {-> New a_exp.a_bloco (bloco_expressoes)}  
-     ;
+ {soma} fator soma termo {-> New a_exp.a_soma (fator.a_exp , termo.a_exp  )  }   |
 
-    fator  {-> a_exp  } =
+ {menos} fator menos termo {-> New a_exp.a_menos (fator.a_exp , termo.a_exp)  }   |
 
-     {termo} termo {-> termo.a_exp}   |
+ {mult} fator mult termo {-> New a_exp.a_mult (fator.a_exp , termo.a_exp)  }   |
 
-     {soma} fator soma termo {-> New a_exp.a_soma (fator.a_exp , termo.a_exp  )  }   |
+ {div} fator div termo {-> New a_exp.a_div (fator.a_exp , termo.a_exp)  }   |
 
-     {menos} fator menos termo {-> New a_exp.a_menos (fator.a_exp , termo.a_exp)  }   |
+ {mod} fator mod termo {-> New a_exp.a_mod (fator.a_exp , termo.a_exp)  }   |
 
-     {mult} fator mult termo {-> New a_exp.a_mult (fator.a_exp , termo.a_exp)  }   |
+ {igual} fator igual termo {-> New a_exp.a_igual (fator.a_exp , termo.a_exp)  }   |
 
-     {div} fator div termo {-> New a_exp.a_div (fator.a_exp , termo.a_exp)  }   |
+ {maiorigual} fator maiorigual termo {-> New a_exp.a_maiorigual (fator.a_exp , termo.a_exp)  }   |
 
-     {mod} fator mod termo {-> New a_exp.a_mod (fator.a_exp , termo.a_exp)  }   |
+ {maior} fator maior termo {-> New a_exp.a_maior (fator.a_exp , termo.a_exp)  }   |
 
-     {igual} fator igual termo {-> New a_exp.a_igual (fator.a_exp , termo.a_exp)  }   |
+ {e} fator e termo {-> New a_exp.a_e (fator.a_exp , termo.a_exp)  }   |
 
-     {maiorigual} fator maiorigual termo {-> New a_exp.a_maiorigual (fator.a_exp , termo.a_exp)  }   |
+ {ou} fator ou termo {-> New a_exp.a_ou (fator.a_exp , termo.a_exp)  }  
+ ;
 
-     {maior} fator maior termo {-> New a_exp.a_maior (fator.a_exp , termo.a_exp)  }   |
+termo	{-> a_exp  } =
 
-     {e} fator e termo {-> New a_exp.a_e (fator.a_exp , termo.a_exp)  }   |
+ {int} numero {-> New a_exp.a_int (numero)  }   |
 
-     {ou} fator ou termo {-> New a_exp.a_ou (fator.a_exp , termo.a_exp)  }  
-     ;
+ {binario} binario {-> New a_exp.a_binario (binario)  }   |
 
-    termo	{-> a_exp  } =
+ {real} real {-> New a_exp.a_real (real)  }   |
 
-     {int} numero {-> New a_exp.a_int (numero)  }   |
+ {cadeia} cadeia {-> New a_exp.a_cadeia (cadeia)  }   |
 
-     {binario} binario {-> New a_exp.a_binario (binario)  }   |
+ {booleano} booleano {-> New a_exp.a_booleano (booleano)  }   |
 
-     {real} real {-> New a_exp.a_real (real)  }   |
+ {variavel} valor {-> New a_exp.a_variavel (valor.a_valor)  }   |
 
-     {cadeia} cadeia {-> New a_exp.a_cadeia (cadeia)  }   |
+ {cham_func} chamadafuncao {-> New a_exp.a_cham_func (chamadafuncao)  }   |
 
-     {booleano} booleano {-> New a_exp.a_booleano (booleano)  }   |
+ {par} par_esq exp par_dir {-> exp.a_exp}   |
 
-     {variavel} valor {-> New a_exp.a_variavel (valor.a_valor)  }   |
+ {nao} nao termo {-> New a_exp.a_nao (termo.a_exp)  }  
+ ;
 
-     {cham_func} chamadafuncao {-> New a_exp.a_cham_func (chamadafuncao)  }   |
+valor	{-> a_valor  } =
 
-     {par} par_esq exp par_dir {-> exp.a_exp}   |
+ {variavel} identificador {-> New a_valor.a_variavel (identificador)  }   |
 
-     {nao} nao termo {-> New a_exp.a_nao (termo.a_exp)  }  
-     ;
+ {vetor} valor chave_esq exp chave_dir {-> New a_valor.a_vetor (valor.a_valor,exp.a_exp )  }  
+ ;
 
-    valor	{-> a_valor  } =
+chamadafuncao  {-> P.chamadafuncao  } =
 
-     {variavel} identificador {-> New a_valor.a_variavel (identificador)  }   |
+ {leia} leia par_esq par_dir 
+     {-> New chamadafuncao.leia (leia)  }   |
 
-     {vetor} valor chave_esq exp chave_dir {-> New a_valor.a_vetor (valor.a_valor,exp.a_exp )  }  
-     ;
+ {size} size par_esq lista_exp? par_dir 
+     {-> New chamadafuncao.size (size ,[lista_exp.a_exp] )  }   |
 
-    chamadafuncao
-         {-> P.chamadafuncao  } =
+ {id} identificador par_esq lista_exp par_dir 
+     {-> New chamadafuncao.id (identificador  , [lista_exp.a_exp] )  }  
+ ;
 
-     {leia} leia par_esq par_dir 
-         {-> New chamadafuncao.leia (leia)  }   |
+lista_exp  {-> a_exp*} =
+	{mais} exp separador lista_exp {-> [exp.a_exp, lista_exp.a_exp] }
+	|{so} exp {-> [exp.a_exp]}
+;
 
-     {size} size par_esq lista_exp par_dir 
-         {-> New chamadafuncao.size (size ,lista_exp)  }   |
+array_comp {-> P.array_comp  } =
 
-     {id} identificador par_esq lista_exp par_dir 
-         {-> New chamadafuncao.id (identificador  , lista_exp )  }  
-     ;
+ chave_esq identificador separador exp chave_dir 
+     {-> New array_comp (identificador , exp.a_exp)  }  
+ ;
 
-    lista_exp
-         {-> P.lista_exp  } =
+seternario {-> P.seternario  } =
 
-     {aexpressoeslistaexp1} exp 
-         {-> New lista_exp.expressoes (exp.a_exp , [  ] )  }   |
+ se par_esq exp par_dir [verdade]: exp senao [falso]: exp 
+     {-> New seternario (exp.a_exp ,verdade.a_exp , falso.a_exp  )  }  
+ ;
 
-     {aexpressoeslistaexp2} exp P.a_maisexp 
-         {-> New lista_exp.expressoes (exp.a_exp , [ a_maisexp.maisexp  ] )  }   |
+bloco_expressoes {-> P.bloco_expressoes  } =
 
-     {vazio} 
-         {-> New lista_exp.vazio ( )  }  
-     ;
+ {ablocoexpressoes1} comece exp termine 
+     {-> New bloco_expressoes ([  ], exp.a_exp)  }   |
 
-    maisexp
-         {-> P.maisexp  } =
+ {ablocoexpressoes2} comece P.a_dec_cons exp termine 
+     {-> New bloco_expressoes ([ a_dec_cons.dec_cons  ], exp.a_exp)  }  
+ ;
 
-     separador exp 
-         {-> New maisexp (separador , exp.a_exp  )  }  
-     ;
+id_atribuicao {-> P.id_atribuicao  } =
 
-	array_comp {-> P.array_comp  } =
-	
-	 chave_esq identificador separador exp chave_dir 
-	     {-> New array_comp (identificador , exp.a_exp)  }  
-	 ;
+ valor atribuidor exp 
+     {-> New id_atribuicao (valor.a_valor , exp.a_exp  )  }  
+ ;
 
-    seternario {-> P.seternario  } =
+a_func_e_proc
+     {-> P.func_e_proc*  } =
 
-     se par_esq exp par_dir [verdade]: exp senao [falso]: exp 
-         {-> New seternario (exp.a_exp ,verdade.a_exp , falso.a_exp  )  }  
-     ;
+ {terminal} P.func_e_proc 
+     {-> [ P.func_e_proc.func_e_proc  ]  }   |
 
-    bloco_expressoes {-> P.bloco_expressoes  } =
+ {non_terminal} P.a_func_e_proc P.func_e_proc 
+     {-> [ a_func_e_proc.func_e_proc, P.func_e_proc.func_e_proc  ]  }  
+ ;
 
-     {ablocoexpressoes1} comece exp termine 
-         {-> New bloco_expressoes ([  ], exp.a_exp)  }   |
+a_var_const
+     {-> P.var_const*  } =
 
-     {ablocoexpressoes2} comece P.a_dec_cons exp termine 
-         {-> New bloco_expressoes ([ a_dec_cons.dec_cons  ], exp.a_exp)  }  
-     ;
+ {terminal} P.var_const 
+     {-> [ P.var_const.var_const  ]  }   |
 
-    id_atribuicao {-> P.id_atribuicao  } =
+ {non_terminal} P.a_var_const P.var_const 
+     {-> [ a_var_const.var_const, P.var_const.var_const  ]  }  
+ ;
+ 
+a_dec_cons
+     {-> P.dec_cons*  } =
 
-     valor atribuidor exp 
-         {-> New id_atribuicao (valor.a_valor , exp.a_exp  )  }  
-     ;
+ {terminal} P.dec_cons 
+     {-> [ P.dec_cons.dec_cons  ]  }   |
 
-    a_func_e_proc
-         {-> P.func_e_proc*  } =
-
-     {terminal} P.func_e_proc 
-         {-> [ P.func_e_proc.func_e_proc  ]  }   |
-
-     {non_terminal} P.a_func_e_proc P.func_e_proc 
-         {-> [ a_func_e_proc.func_e_proc, P.func_e_proc.func_e_proc  ]  }  
-     ;
-
-    a_var_const
-         {-> P.var_const*  } =
-
-     {terminal} P.var_const 
-         {-> [ P.var_const.var_const  ]  }   |
-
-     {non_terminal} P.a_var_const P.var_const 
-         {-> [ a_var_const.var_const, P.var_const.var_const  ]  }  
-     ;
-
-    a_maisparametros
-         {-> P.maisparametros*  } =
-
-     {terminal} P.maisparametros 
-         {-> [ P.maisparametros.maisparametros  ]  }   |
-
-     {non_terminal} P.a_maisparametros P.maisparametros 
-         {-> [ a_maisparametros.maisparametros, P.maisparametros.maisparametros  ]  }  
-     ;
-
-    a_maisexp
-         {-> P.maisexp*  } =
-
-     {terminal} P.maisexp 
-         {-> [ P.maisexp.maisexp  ]  }   |
-
-     {non_terminal} P.a_maisexp P.maisexp 
-         {-> [ a_maisexp.maisexp, P.maisexp.maisexp  ]  }  
-     ;
-
-    a_dec_cons
-         {-> P.dec_cons*  } =
-
-     {terminal} P.dec_cons 
-         {-> [ P.dec_cons.dec_cons  ]  }   |
-
-     {non_terminal} P.a_dec_cons P.dec_cons 
-         {-> [ a_dec_cons.dec_cons, P.dec_cons.dec_cons  ]  }  
-     ;
+ {non_terminal} P.a_dec_cons P.dec_cons 
+     {-> [ a_dec_cons.dec_cons, P.dec_cons.dec_cons  ]  }  
+ ;
 
 Abstract Syntax Tree
-    programa =
-     var_const* func_e_proc+ 
-     ;
+programa =
+ var_const* func_e_proc+ 
+ ;
 
-    var_const =
-     {numero} dec_var | 
-     {bool} dec_cons 
-     ;
+var_const =
+ {numero} dec_var | 
+ {bool} dec_cons 
+ ;
 
-    func_e_proc =
-     {funcao} dec_funcao | 
-     {proc} dec_procedimento 
-     ;
+func_e_proc =
+ {funcao} dec_funcao | 
+ {proc} dec_procedimento 
+ ;
 
-    dec_funcao =
-     funcao doispontos tiporetorno identificador par_esq parametros par_dir a_exp 
-     ;
+dec_funcao =
+ tiporetorno identificador parametro* a_exp 
+ ;
 
-    dec_procedimento =
-     {simples} principal? procedimento doispontos identificador par_esq parametros par_dir a_exp 
-     ;
+dec_procedimento =
+ {simples} identificador parametro* a_exp
+ ;
 
-    parametros =
-     {parametros} parametro maisparametros* | 
-     {vazio} 
-     ;
+parametro =
+ tipo_parametro identificador 
+ ;
 
-    parametro =
-     tipo_parametro identificador 
-     ;
 
-    maisparametros =
-     separador parametro 
-     ;
+tipo_parametro =
+ {base} tipo_base | 
+ tipo_parametro  
+ ;
 
-    tipo_parametro =
-     {base} tipo_base | 
-     tipo_parametro chave_esq chave_dir 
-     ;
+tipo =
+ {base} tipo_base | 
+ {vetor} tipo a_exp 
+ ;
 
-    tipo =
-     {base} tipo_base | 
-     {vetor} tipo chave_esq a_exp chave_dir 
-     ;
+tiporetorno =
+ {base} tipo_base | 
+ {vetor} tiporetorno 
+ ;
 
-    tiporetorno =
-     {base} tipo_base | 
-     {vetor} tiporetorno chave_esq chave_dir 
-     ;
+tipo_base =
+ {inteiro} tipoint | 
+ {real} tiporeal | 
+ {cadeia} tipocadeia | 
+ {booleano} tipobooleano 
+ ;
 
-    tipo_base =
-     {inteiro} tipoint | 
-     {real} tiporeal | 
-     {cadeia} tipocadeia | 
-     {booleano} tipobooleano 
-     ;
+dec_cons =
+ constante doispontos tipo id_atribuicao pontovirgula 
+ ;
 
-    dec_cons =
-     constante doispontos tipo id_atribuicao pontovirgula 
-     ;
+dec_var =
+ variavel doispontos tipo id_ou_id_atri pontovirgula 
+ ;
 
-    dec_var =
-     variavel doispontos tipo id_ou_id_atri pontovirgula 
-     ;
+id_ou_id_atri =
+ {id} identificador | 
+ {id_a} id_atribuicao 
+ ;
+ 
+a_exp = 
+  {a_arraycomp} array_comp 
+ | {a_negativo} a_exp 
+ | {a_seternario} seternario  
+ | {a_bloco} bloco_expressoes 
+ | {a_soma} [esq]:a_exp [dir]:a_exp
+ | {a_menos} [esq]:a_exp [dir]:a_exp
+ | {a_mult} [esq]:a_exp [dir]:a_exp
+ | {a_div} [esq]:a_exp [dir]:a_exp
+ | {a_mod} [esq]:a_exp [dir]:a_exp
+ | {a_igual} [esq]:a_exp [dir]:a_exp
+ | {a_maiorigual} [esq]:a_exp [dir]:a_exp
+ | {a_maior} [esq]:a_exp [dir]:a_exp
+ | {a_e} [esq]:a_exp [dir]:a_exp
+ | {a_ou} [esq]:a_exp [dir]:a_exp
+ | {a_int} numero
+ | {a_binario} binario 
+ | {a_real} real 
+ | {a_cadeia} cadeia 
+ | {a_booleano} booleano 
+ | {a_variavel} a_valor
+ | {a_cham_func} chamadafuncao 
+ | {a_nao} a_exp
+ | {a_vazio}
+ ;
 
-    id_ou_id_atri =
-     {id} identificador | 
-     {id_a} id_atribuicao 
-     ;
-     
-    a_exp = 
-      {a_arraycomp} array_comp 
-     | {a_negativo} a_exp 
-     | {a_seternario} seternario  
-     | {a_bloco} bloco_expressoes 
-     | {a_soma} [esq]:a_exp [dir]:a_exp
-     | {a_menos} [esq]:a_exp [dir]:a_exp
-     | {a_mult} [esq]:a_exp [dir]:a_exp
-     | {a_div} [esq]:a_exp [dir]:a_exp
-     | {a_mod} [esq]:a_exp [dir]:a_exp
-     | {a_igual} [esq]:a_exp [dir]:a_exp
-     | {a_maiorigual} [esq]:a_exp [dir]:a_exp
-     | {a_maior} [esq]:a_exp [dir]:a_exp
-     | {a_e} [esq]:a_exp [dir]:a_exp
-     | {a_ou} [esq]:a_exp [dir]:a_exp
-     | {a_int} numero
-     | {a_binario} binario 
-     | {a_real} real 
-     | {a_cadeia} cadeia 
-     | {a_booleano} booleano 
-     | {a_variavel} a_valor
-     | {a_cham_func} chamadafuncao 
-     | {a_nao} a_exp
-	 ;
+ a_valor =
+ {a_variavel} identificador | 
+ {a_vetor} a_valor a_exp  
+ ;
 
-     a_valor =
-     {a_variavel} identificador | 
-     {a_vetor} a_valor a_exp  
-     ;
+chamadafuncao =
+ {leia} leia | 
+ {size} size a_exp* | 
+ {id} identificador a_exp* 
+ ;
 
-    chamadafuncao =
-     {leia} leia | 
-     {size} size lista_exp | 
-     {id} identificador lista_exp 
-     ;
+array_comp =
+  identificador a_exp  
+ ;
 
-    lista_exp =
-     {expressoes} a_exp maisexp* | 
-     {vazio} 
-     ;
+seternario =
+  a_exp [verdade]: a_exp [falso]: a_exp 
+ ;
 
-    maisexp =
-     separador a_exp 
-     ;
+bloco_expressoes =
+ dec_cons* a_exp 
+ ;
 
-    array_comp =
-      identificador a_exp  
-     ;
-
-    seternario =
-      a_exp [verdade]: a_exp [falso]: a_exp 
-     ;
-
-    bloco_expressoes =
-     dec_cons* a_exp 
-     ;
-
-    id_atribuicao =
-     a_valor a_exp
-     ;
+id_atribuicao =
+ a_valor a_exp
+ ;
  
